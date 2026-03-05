@@ -1,6 +1,9 @@
 import type { PrismaClient, UserRole } from "@prisma/client";
 import type { FastifyReply, FastifyRequest, preHandlerHookHandler } from "fastify";
-import jwt, { JsonWebTokenError, TokenExpiredError, type JwtPayload, type VerifyOptions } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+const { JsonWebTokenError, TokenExpiredError } = jwt;
+type JwtPayload = jwt.JwtPayload;
+type VerifyOptions = jwt.VerifyOptions;
 
 export type AuthenticatedUser = {
   id: string;
