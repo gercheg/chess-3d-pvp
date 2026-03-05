@@ -1,2 +1,1 @@
-export { createInitialBoard } from './board';
-export type { Piece, Square, Board, Move, GameState, Color, PieceType, GameStatus } from './types';
+export { ChessEngine, type Color, type DrawReason, type MoveInput, type MoveResult, type Piece, type PieceType } from "./engine.js";

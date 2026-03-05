@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "pnpm -r --parallel dev",
     "build": "pnpm -r build",
-    "test": "pnpm -r test",
+    "lint": "pnpm -r --if-present lint",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "test:unit": "pnpm -r --if-present test",
     "test:integration": "pnpm --filter server test:integration",
-    "lint": "pnpm -r lint",
     "format": "prettier --write .",
     "clean": "pnpm -r clean"
   },

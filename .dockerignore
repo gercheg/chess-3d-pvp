@@ -1,0 +1,9 @@
+.git
+.github
+node_modules
+**/node_modules
+**/dist
+pnpm-debug.log*
+*.log
+docker-compose.yml
+terraform

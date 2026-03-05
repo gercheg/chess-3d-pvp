@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum GameStatus {
+  PENDING
+  ACTIVE
+  FINISHED
+  ABANDONED
+}
+
+enum GameResult {
+  WHITE_WIN
+  BLACK_WIN
+  DRAW
+  ABORTED
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique @db.VarChar(320)
+  username     String   @unique @db.VarChar(30)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  eloRating    Int      @default(1200) @map("elo_rating")
+  gamesPlayed  Int      @default(0) @map("games_played")
+  wins         Int      @default(0)
+  losses       Int      @default(0)
+  draws        Int      @default(0)
+  role         UserRole @default(USER)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  whiteGames   Game[]      @relation("WhitePlayerGames")
+  blackGames   Game[]      @relation("BlackPlayerGames")
+  winnerGames  Game[]      @relation("WinnerGames")
+  moves        Move[]
+  matchQueue   MatchQueue[]
+
+  @@map("users")
+}
+
+model Game {
+  id            String     @id @default(uuid()) @db.Uuid
+  whitePlayerId String     @map("white_player_id") @db.Uuid
+  blackPlayerId String     @map("black_player_id") @db.Uuid
+  winnerId      String?    @map("winner_id") @db.Uuid
+  status        GameStatus @default(PENDING)
+  timeControl   String     @map("time_control") @db.VarChar(50)
+  result        GameResult?
+  fenFinal      String?    @map("fen_final")
+  pgn           String?
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  startedAt     DateTime?  @map("started_at")
+  endedAt       DateTime?  @map("ended_at")
+
+  whitePlayer User  @relation("WhitePlayerGames", fields: [whitePlayerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  blackPlayer User  @relation("BlackPlayerGames", fields: [blackPlayerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  winner      User? @relation("WinnerGames", fields: [winnerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  moves       Move[]
+
+  @@index([whitePlayerId])
+  @@index([blackPlayerId])
+  @@index([winnerId])
+  @@index([status])
+  @@map("games")
+}
+
+model Move {
+  id              String   @id @default(uuid()) @db.Uuid
+  gameId          String   @map("game_id") @db.Uuid
+  playerId        String   @map("player_id") @db.Uuid
+  moveNumber      Int      @map("move_number")
+  fromSquare      String   @map("from_square") @db.Char(2)
+  toSquare        String   @map("to_square") @db.Char(2)
+  piece           String   @db.VarChar(16)
+  capturedPiece   String?  @map("captured_piece") @db.VarChar(16)
+  promotion       String?  @db.VarChar(16)
+  fenAfter        String   @map("fen_after")
+  notationSan     String   @map("notation_san") @db.VarChar(32)
+  timeRemainingMs BigInt?  @map("time_remaining_ms")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  game   Game @relation(fields: [gameId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player User @relation(fields: [playerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([gameId, moveNumber])
+  @@index([playerId])
+  @@map("moves")
+}
+
+model MatchQueue {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  eloRating   Int      @map("elo_rating")
+  timeControl String   @map("time_control") @db.VarChar(50)
+  queuedAt    DateTime @default(now()) @map("queued_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([userId, timeControl])
+  @@index([eloRating, timeControl, queuedAt])
+  @@map("match_queue")
+}

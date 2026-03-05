@@ -20,14 +20,14 @@ workspace:
   root: ~/chess-workspaces
 hooks:
   after_create: |
-    git clone https://github.com/AnttonPC/chess-3d-pvp.git . 2>/dev/null || git init
-  before_run: |
-    git pull origin main 2>/dev/null || true
+    cp -r /d/Work/Symphony/TestForSymphony/. . 2>/dev/null || cp -r "D:/Work/Symphony/TestForSymphony/." . 2>/dev/null || true
+    rm -rf .git create_issues*.ps1 2>/dev/null || true
+    git init && git add -A && git commit -m "workspace init" 2>/dev/null || true
 agent:
   max_concurrent_agents: 3
   max_turns: 20
 codex:
-  command: codex app-server
+  command: export PATH="/c/Users/gerch/AppData/Roaming/npm:$PATH" && codex app-server
   approval_policy: never
   thread_sandbox: workspace-write
   turn_sandbox_policy:

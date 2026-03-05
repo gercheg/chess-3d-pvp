@@ -10,3 +10,5 @@ coverage/
 *.tsbuildinfo
 .prisma/
 create_issues*.ps1
+WORKFLOW.md
+pnpm-lock.yaml
