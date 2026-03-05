@@ -1,5 +1,5 @@
-import { RoomError } from "../game/types";
-import { RoomManager } from "../game/room-manager";
+import { RoomError } from "../game/types.js";
+import { RoomManager } from "../game/room-manager.js";
 
 type EventHandler = (payload?: unknown) => void;
 
@@ -20,9 +20,9 @@ export const registerGameRoomHandlers = (socket: SocketLike, io: IoLike, roomMan
     io.to(roomId).emit("game:state", roomManager.getRoomState(roomId));
   };
 
-  const emitError = (error: unknown): void => {
-    if (error instanceof RoomError) {
-      socket.emit("game:error", { code: error.code, message: error.message });
+  const emitError = (err: unknown): void => {
+    if (err instanceof RoomError) {
+      socket.emit("game:error", { code: err.code, message: err.message });
       return;
     }
 

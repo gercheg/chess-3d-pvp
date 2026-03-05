@@ -60,9 +60,9 @@ function extractBearerToken(authorization: string | undefined): string | null {
 }
 
 function verifyClaims(token: string, config: AuthConfig): JwtClaims {
-  const payload = jwt.verify(token, config.jwtSecret, config.jwtVerifyOptions);
+  const payload = jwt.verify(token, config.jwtSecret, { ...config.jwtVerifyOptions, complete: false });
 
-  if (typeof payload !== "object" || payload === null || typeof payload.sub !== "string" || payload.sub.length === 0) {
+  if (typeof payload === "string" || typeof payload.sub !== "string" || payload.sub.length === 0) {
     throw new JsonWebTokenError("JWT payload must include a string sub claim");
   }
 

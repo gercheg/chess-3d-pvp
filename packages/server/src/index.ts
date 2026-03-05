@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { authMiddleware, requireAdmin, type AuthConfig } from "./auth/middleware.js";
 import { RoomManager } from "./game/room-manager.js";
-import { registerGameRoomHandlers } from "./ws/game-room-events.js";
+import { registerGameRoomHandlers, type SocketLike, type IoLike } from "./ws/game-room-events.js";
 
 const PORT = parseInt(process.env.PORT || "8080", 10);
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";

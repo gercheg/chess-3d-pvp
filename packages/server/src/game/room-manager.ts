@@ -6,7 +6,7 @@ import {
   type RoomPlayer,
   type RoomState,
   RoomError
-} from "./types";
+} from "./types.js";
 
 const DEFAULT_GAME_STATE: GameState = {
   board: "startpos",
@@ -98,7 +98,7 @@ export class RoomManager {
     }
 
     const previousSpectatorCount = room.spectators.length;
-    room.spectators = room.spectators.filter((id) => id !== input.socketId);
+    room.spectators = room.spectators.filter((id: string) => id !== input.socketId);
     if (room.spectators.length !== previousSpectatorCount) {
       changed = true;
     }
