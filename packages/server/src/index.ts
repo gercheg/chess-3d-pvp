@@ -3,7 +3,7 @@ import cors from "@fastify/cors";
 import { createServer } from "node:http";
 import { Server as SocketIOServer } from "socket.io";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { authMiddleware, requireAdmin, type AuthConfig } from "./auth/middleware.js";
 import { RoomManager } from "./game/room-manager.js";
