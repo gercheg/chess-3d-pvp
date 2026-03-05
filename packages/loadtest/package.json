@@ -1,0 +1,9 @@
+{
+  "name": "@chess/loadtest",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test:api": "k6 run scenarios/api-load.js",
+    "test:ws": "k6 run scenarios/ws-load.js"
+  }
+}

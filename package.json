@@ -1,0 +1,19 @@
+{
+  "name": "chess-3d-pvp",
+  "private": true,
+  "version": "0.1.0",
+  "description": "3D Chess PvP Platform with matchmaking, leaderboard, and admin panel",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "test:integration": "pnpm --filter server test:integration",
+    "lint": "pnpm -r lint",
+    "format": "prettier --write .",
+    "clean": "pnpm -r clean"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}
