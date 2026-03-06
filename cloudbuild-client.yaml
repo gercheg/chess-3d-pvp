@@ -1,0 +1,12 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-f'
+      - 'packages/client/Dockerfile'
+      - '-t'
+      - 'europe-west1-docker.pkg.dev/chess-3d-pvp-4142/chess-docker/chess-client:latest'
+      - '.'
+images:
+  - 'europe-west1-docker.pkg.dev/chess-3d-pvp-4142/chess-docker/chess-client:latest'
+timeout: 600s

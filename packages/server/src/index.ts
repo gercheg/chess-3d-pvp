@@ -12,6 +12,8 @@ import { registerGameRoomHandlers, type SocketLike, type IoLike } from "./ws/gam
 const PORT = parseInt(process.env.PORT || "8080", 10);
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+const ADDITIONAL_ORIGINS = (process.env.ADDITIONAL_ORIGINS || "").split(",").filter(Boolean);
+const ALLOWED_ORIGINS = [CLIENT_URL, "http://localhost:5173", "http://localhost:5174", ...ADDITIONAL_ORIGINS];
 
 const prisma = new PrismaClient();
 const roomManager = new RoomManager();
@@ -25,11 +27,11 @@ const fastify = Fastify({
 });
 
 const io = new SocketIOServer(fastify.server, {
-  cors: { origin: [CLIENT_URL, "http://localhost:5174"], credentials: true },
+  cors: { origin: ALLOWED_ORIGINS, credentials: true },
 });
 
 await fastify.register(cors, {
-  origin: [CLIENT_URL, "http://localhost:5174"],
+  origin: ALLOWED_ORIGINS,
   credentials: true,
 });
 
@@ -186,6 +188,14 @@ fastify.get<{ Querystring: { limit?: string } }>("/api/admin/users", { preHandle
     orderBy: { createdAt: "desc" },
     take: limit,
   });
+});
+
+// --- Clock timeout broadcasts ---
+roomManager.setOnStateChange((roomId: string) => {
+  try {
+    const state = roomManager.getRoomState(roomId);
+    io.to(roomId).emit("game:state", state);
+  } catch { /* room may have been deleted */ }
 });
 
 // --- WebSocket ---
